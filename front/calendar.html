@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Calendario con Bulma</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <style>
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .calendar-day {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .calendar-header {
+            font-weight: bold;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .today {
+            background-color: #00d1b2;
+            color: white;
+        }
+        .is-busy {
+            background-color: #ff3860; /* Color de fondo rojo para días ocupados */
+            color: white; /* Color del texto para días ocupados */
+            pointer-events: none; /* Deshabilitar interacción si es necesario */
+        }
+        .hours-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-one-third">
+                    <button class="button is-link" id="prevMonth">Mes Anterior</button>
+                </div>
+                <div class="column has-text-centered">
+                    <h2 class="title is-4" id="monthYear"></h2>
+                </div>
+                <div class="column is-one-third has-text-right">
+                    <button class="button is-link" id="nextMonth">Mes Siguiente</button>
+                </div>
+            </div>
+            
+            <div class="calendar" id="calendar">
+                <!-- Aquí se generará el calendario dinámicamente -->
+            </div>
+
+            <!-- Contenedor de horas disponibles -->
+            <div id="hoursContainer" class="hours-container">
+                <h3 class="title is-5">Horas disponibles</h3>
+                <div id="hoursList" class="tags">
+                    <!-- Aquí se mostrarán las horas disponibles -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="./calendar.js"></script>
+</body>
+</html>

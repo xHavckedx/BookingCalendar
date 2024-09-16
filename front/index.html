@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Calendar Integration</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="script.js" refer></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+    <h1>Google Calendar Integration</h1>
+    
+    <div>
+        <button onclick="authenticate()">Authenticate with Google</button>
+    </div>
+    <hr>
+    <h2>Create a new event:</h2>
+    
+    <!-- Campo para el título del evento -->
+    <label for="eventTitle">Event Title:</label>
+    <input type="text" id="eventTitle" placeholder="Enter event title">
+    <br><br>
+    <!-- Selector de fecha de inicio -->
+    <label for="startDate">Start Date and Time:</label>
+    <input type="text" id="startDate" placeholder="Select start date and time">
+    <br><br>
+    <!-- Selector de fecha de fin -->
+    <label for="endDate">End Date and Time:</label>
+    <input type="text" id="endDate" placeholder="Select end date and time">
+    <br><br>
+    <div>
+        <button onclick="addEvent()">Add Event</button>
+    </div>
+    <hr>
+</body>
+</html>
