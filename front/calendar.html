@@ -17,6 +17,7 @@
             border: 1px solid #ddd;
             padding: 10px;
             text-align: center;
+            cursor: pointer;
         }
         .calendar-header {
             font-weight: bold;
@@ -32,8 +33,36 @@
             color: white; /* Color del texto para días ocupados */
             pointer-events: none; /* Deshabilitar interacción si es necesario */
         }
+        .fully-busy {
+            background-color: #f8d7da; /* Color de fondo para días ocupados */
+            color: #721c24; /* Color del texto */
+            cursor: not-allowed; /* Mostrar un cursor deshabilitado */
+        }
         .hours-container {
             margin-top: 20px;
+        }
+        #messageContainer{
+            display: none;
+        }
+        #messageContainerError{
+            display: none;
+        }
+        .partially-busy {
+            background-color: #ffe5b5; /* Naranja claro */
+            color: #000; /* El texto se mantiene en negro o puedes cambiarlo si es necesario */
+        }
+        .avalaible {
+            background-color: #8dfbb9;
+            color: #000;
+            border-color: #17cc17;
+        }
+        .tag.is-primary{
+            cursor: pointer;
+            flex: 0 30%;
+            font-size: 1em;
+        }
+        #hoursList{
+            width: 50%;
         }
     </style>
 </head>
@@ -61,6 +90,50 @@
                 <h3 class="title is-5">Horas disponibles</h3>
                 <div id="hoursList" class="tags">
                     <!-- Aquí se mostrarán las horas disponibles -->
+                </div>
+            </div>
+            <!-- Contenedor del formulario para agregar un evento -->
+            <div id="eventFormContainer" class="box" style="display: none; margin-top: 20px;">
+                <h3 class="title is-5">Agregar Evento</h3>
+                <form id="eventForm">
+                    <div class="field">
+                        <label class="label">Título del evento</label>
+                        <div class="control">
+                            <input class="input" type="text" id="eventTitle" placeholder="Título del evento" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Fecha y Hora de Inicio</label>
+                        <div class="control">
+                            <input class="input" type="datetime-local" id="startDateTime" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Fecha y Hora de Fin</label>
+                        <div class="control">
+                            <input class="input" type="datetime-local" id="endDateTime" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-link" type="submit">Agregar Evento</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br>
+            <div id="messageContainer">
+                <div class="message is-success">
+                    <div class="message-body">
+                    Evento registrado correctamente.
+                    </div>
+                </div>
+            </div>
+            <div id="messageContainerError">
+                <div class="message is-danger">
+                    <div class="message-body">
+                    Error al procesar la operación.
+                    </div>
                 </div>
             </div>
         </div>

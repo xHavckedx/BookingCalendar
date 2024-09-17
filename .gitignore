@@ -1,0 +1,8 @@
+# created by virtualenv automatically
+Include
+Lib
+Scripts
+__pycache__
+pyvenv.cfg
+token.json
+credentials.json
