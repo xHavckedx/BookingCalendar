@@ -9,27 +9,19 @@ from googleapiclient.discovery import build
 
 app = Flask(__name__)
 
-#Habilitar CORS
-
+# Habilitar CORS
 CORS(app)
 
 # Configuración de permisos de Google Calendar
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-@app.after_request
-def add_cors_headers(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
-    return response
-
-# Ruta para autenticar al usuario y obtener credenciales
-@app.route('/authenticate')
-def authenticate():
+# Función auxiliar para obtener o actualizar credenciales
+def get_credentials():
     creds = None
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     
+    # Si las credenciales no son válidas, renovarlas o crear nuevas
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -37,34 +29,43 @@ def authenticate():
             flow = InstalledAppFlow.from_client_secrets_file(
                 './back/credentials.json', SCOPES)
             creds = flow.run_local_server(port=4000)
-        
+        # Guardar las nuevas credenciales
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
+    
+    return creds
 
+# Función auxiliar para obtener un servicio de Google Calendar
+def get_calendar_service():
+    creds = get_credentials()
+    return build('calendar', 'v3', credentials=creds)
+
+# Ruta para autenticar al usuario y obtener credenciales
+@app.route('/authenticate')
+def authenticate():
+    creds = get_credentials()
     return jsonify({'message': 'Authenticated successfully'})
 
-
-# Ruta para obtener los días ocupados en el calendario de Google Calendar durante el mes actual
-@app.route('/get-busy-days', methods=['GET'])
-def get_busy_days():
-    creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    service = build('calendar', 'v3', credentials=creds)
-
-    # Obtener la fecha actual
+# Función auxiliar para obtener el rango de fechas para el mes actual
+def get_month_date_range():
     now = datetime.datetime.utcnow()
-    
-    # Definir el primer día del mes actual
     first_day_of_month = now.replace(day=1)
     
-    # Definir el primer día del siguiente mes, restándole un microsegundo para obtener el último segundo del mes actual
-    if now.month == 12:  # Si estamos en diciembre, el siguiente mes es enero del siguiente año
+    if now.month == 12:
         first_day_next_month = first_day_of_month.replace(year=now.year + 1, month=1)
     else:
         first_day_next_month = first_day_of_month.replace(month=now.month + 1)
 
-    # Convertimos ambas fechas a formato ISO con zona horaria UTC ('Z')
     time_min = first_day_of_month.isoformat() + 'Z'
     time_max = first_day_next_month.isoformat() + 'Z'
+    
+    return time_min, time_max
+
+# Ruta para obtener los días ocupados en el calendario de Google Calendar durante el mes actual
+@app.route('/get-busy-days', methods=['GET'])
+def get_busy_days():
+    service = get_calendar_service()
+    time_min, time_max = get_month_date_range()
 
     # Obtener los eventos dentro del mes actual
     events_result = service.events().list(
@@ -72,15 +73,9 @@ def get_busy_days():
         singleEvents=True, orderBy='startTime').execute()
 
     events = events_result.get('items', [])
-
-    busy_days = []
-    for event in events:
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        busy_days.append(start)
+    busy_days = [event['start'].get('dateTime', event['start'].get('date')) for event in events]
 
     return jsonify({'busy_days': busy_days})
-
-
 
 # Ruta para agregar un nuevo evento al calendario
 @app.route('/add-event', methods=['POST'])
@@ -94,18 +89,17 @@ def add_event():
         return response, 200
     
     data = request.json
-    creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    service = build('calendar', 'v3', credentials=creds)
-    print(data['start']['dateTime'], data['end'])
+    service = get_calendar_service()
+
     # Crear el nuevo evento
     event = {
         'summary': data['summary'],
         'start': {
-            'dateTime': data['start']['dateTime'],  # Fecha y hora de inicio
-            'timeZone': data['start']['timeZone'],  # Ajusta esto según tu zona horaria
+            'dateTime': data['start']['dateTime'],
+            'timeZone': data['start']['timeZone'],
         },
         'end': {
-            'dateTime': data['end']['dateTime'],  # Fecha y hora de fin
+            'dateTime': data['end']['dateTime'],
             'timeZone': data['end']['timeZone'],
         },
     }
@@ -113,7 +107,6 @@ def add_event():
     created_event = service.events().insert(calendarId='primary', body=event).execute()
 
     return jsonify({'message': 'Event created successfully', 'event': created_event})
-
 
 if __name__ == '__main__':
     app.run(debug=True)
