@@ -6,7 +6,7 @@ La app funciona dinámicamente y el backend se encarga de enviar al front los di
 
 # Requisitos
 
-Es necesaria la creación de 1 archivo token, el cual contendrá lo siguiente:
+Es necesaria la creación de 1 archivo `token.json`, el cual contendrá lo siguiente:
 
 ```json
  {"token": "sometoken", "refresh_token": "anothertoken", "token_uri": "https://oauth2.googleapis.com/token", "client_id": "client_id", "client_secret": "client_secret", "scopes": ["https://www.googleapis.com/auth/calendar"], "universe_domain": "googleapis.com", "account": "", "expiry": "2024-09-17T19:52:39.429893Z"}
@@ -14,4 +14,8 @@ Es necesaria la creación de 1 archivo token, el cual contendrá lo siguiente:
 
 # Visualicación
 
+<<<<<<< HEAD
 ![BookingCalendar](./resources/demoApp.png)
+=======
+![BookingCalendar](./resources/demoApp.png)
+>>>>>>> dev
