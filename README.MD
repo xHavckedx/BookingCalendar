@@ -14,8 +14,4 @@ Es necesaria la creación de 1 archivo `token.json`, el cual contendrá lo sigui
 
 # Visualicación
 
-<<<<<<< HEAD
 ![BookingCalendar](./resources/demoApp.png)
-=======
-![BookingCalendar](./resources/demoApp.png)
->>>>>>> dev
