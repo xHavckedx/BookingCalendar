@@ -96,17 +96,17 @@ def add_event():
     data = request.json
     creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     service = build('calendar', 'v3', credentials=creds)
-
+    print(data['start']['dateTime'], data['end'])
     # Crear el nuevo evento
     event = {
         'summary': data['summary'],
         'start': {
-            'dateTime': data['start'],  # Fecha y hora de inicio
-            'timeZone': 'Europe/Madrid',  # Ajusta esto según tu zona horaria
+            'dateTime': data['start']['dateTime'],  # Fecha y hora de inicio
+            'timeZone': data['start']['timeZone'],  # Ajusta esto según tu zona horaria
         },
         'end': {
-            'dateTime': data['end'],  # Fecha y hora de fin
-            'timeZone': 'Europe/Madrid',
+            'dateTime': data['end']['dateTime'],  # Fecha y hora de fin
+            'timeZone': data['end']['timeZone'],
         },
     }
 
